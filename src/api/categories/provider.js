@@ -2,60 +2,51 @@ import React, {useCallback, useState} from 'react';
 import Context from './context';
 import mock from '../mock.js'
 
-// export const Context = createContext();
-
-export const LocationsProvider = (props) => {
+export const CategoriesProvider = (props) => {
     const [data, setData] = useState([]);
     console.log('data', data)
     const get = useCallback(() => {
         return Promise.resolve().then(() => {
             setData(mock.categories);
-            return mock.categories
         }, function() {
             console.error('no data')
         });
 
-    }, [mock, setData]);
+    }, [mock.categories, setData]);
 
     const put = useCallback((body) => {
-        if (body.includes('id')) {
-            const newData = data.reduce((acc, next) => {
-                if (next.id === body.id) {
-                    localStorage.removeItem(body.id);
-                    localStorage.setItem(body.id, body);
-                    const updatedItem = localStorage.getItem(body.id);
-                    acc.concat(updatedItem)
-                }
-                return acc.concat(next)
-            }, []);
-            setData(newData)
-        } else {
-            alert('id is required')
-        }
+        const newData = data.reduce((acc, next) => {
+            if (next.id === body.id) {
+                return acc.concat(body)
+
+            }
+            return acc.concat(next)
+        }, []);
+        setData(newData)
+
     }, [data]);
 
     const post = useCallback((body) => {
-        if (body.includes('id')) {
-            const newData = data.reduce((acc, next) => {
-                if (next.id !== body.id) {
-                    localStorage.setItem(body.id, body);
-                    const newItem = localStorage.getItem(body.id);
-                    acc.concat(newItem)
-                } else {
-                    alert('this id is already exist')
-                }
-                return acc.concat(next)
-            }, []);
-            setData(newData)
-        } else {
-            alert('id is required')
-        }
+        const id = body.name.toLowerCase().split(' ').join('_');
+        const newData = data.concat({id, ...body});
+        setData(newData)
+
+    }, [data]);
+
+    const remove = useCallback((id) => {
+        return Promise.resolve().then(() => {
+            const filtered = data.filter((item) =>  item.id !== id);
+            setData(filtered);
+        }, function() {
+            console.error('no data')
+        });
     }, [data]);
 
     const providerValue = {
         get,
         put,
         post,
+        remove,
         data,
         setData
     };
@@ -67,4 +58,4 @@ export const LocationsProvider = (props) => {
     )
 };
 
-export default LocationsProvider;
+export default CategoriesProvider;

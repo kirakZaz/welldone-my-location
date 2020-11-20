@@ -1,47 +1,127 @@
-import React, {useCallback, useState} from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback, useContext, useEffect, useState, memo } from 'react';
+
 import Grid from '@material-ui/core/Grid'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Collapse from '@material-ui/core/Collapse';
+import Button from "@material-ui/core/Button/Button";
+import ListOption from "../uiComponents/ListOption";
+import EditModal from "../uiComponents/Modals/EditModal";
+import ViewModal from "../uiComponents/Modals/ViewModal";
 
+import AddCategoryModal from '../uiComponents/Modals/AddCategoryModal'
 
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-
-const categories = [
-    {name: 'Malls'},
-    {name: 'Food'},
-    {name: 'Work Area'},
-    {name: 'Parks'}
-];
+import CategoriesContext from "../../api/categories/context";
+import useStyles from './categoriesStyles.js'
 
 const Categories = () => {
+    const classes = useStyles();
+    const categories = useContext(CategoriesContext);
 
-    const [selected, setSelected] = useState(null);
-    const handleEdit = useCallback(()=>{},[]);
-    const handleDelete = useCallback(()=>{},[]);
-    const handleView = useCallback(()=>{},[]);
-    const handleSelected = useCallback((name)=>()=>{
-        setSelected(name)
-    },[selected]);
+    useEffect(() =>{
+        categories.get()
+    },[]);
+
+    const [modalData, setModalData] = useState({});
+    const [editInput, openEditInput] = useState('');
+    const [openView, setOpenView] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [openAdd, setOpenAdd] = useState(false);
+
+    const handleOpenAddCategory = useCallback(() => {
+        setOpenAdd(true)
+    },[]);
+
+    const handleChangeLine = useCallback((e) => {
+        const { name, value } = e.target;
+        setModalData({...modalData, [name]: value})
+    }, [modalData]);
+
+    const handleEdit = useCallback((item) => () => {
+        setOpen(true);
+        setModalData(item);
+    },[]);
+
+    const handleEditLine = useCallback((item) => () => {
+        openEditInput(item)
+    },[]);
+
+    const handleDelete = useCallback((id) => () => {
+        categories.remove(id)
+    },[categories.data]);
+
+    const handleView = useCallback((item) => () => {
+        setOpenView(true);
+        setModalData(item);
+    }, []);
+
+    const handleClose = useCallback(() => {
+        setOpen(false);
+        setModalData({});
+    },[]);
+
+    const handleCloseView = useCallback(() => {
+        setOpenView(false);
+        setModalData({});
+    }, []);
+
+    const handleCloseAddCategory = useCallback(() => {
+        setOpenAdd(false)
+    },[]);
+
+    const handleSave = useCallback(() => {
+        categories.put(modalData);
+        openEditInput('');
+        setOpen(false);
+        setModalData({});
+    }, [categories, modalData]);
+
     return (
         <Grid container>
-            {categories?.map((category) => {
+            <Grid container justify="flex-end">
+                <Button
+                    className={classes.addButton}
+                    color="primary"
+                    variant="contained"
+                    onClick={handleOpenAddCategory}
+                >
+                    Add Category
+                </Button>
+            </Grid>
+
+            {categories?.data?.map((category) => {
                 return (
-                    <Grid container justify="space-between" alignItems="center" key={category.name} onClick={handleSelected(category.name)}>
-                        <Typography variant='h5'>{category.name}</Typography>
-                        {selected === category.name && <Grid>
-                            <IconButton onClick={handleEdit}><EditIcon /></IconButton>
-                            <IconButton onClick={handleDelete}><DeleteIcon /></IconButton>
-                            <IconButton onClick={handleView}><VisibilityIcon /></IconButton>
-                        </Grid>}
-                    </Grid>
+                    <ListOption
+                        key={category.id}
+                        handleEdit={handleEdit(category)}
+                        handleDelete={handleDelete(category.id)}
+                        handleView={handleView(category)}
+                        item={category}
+                    />
+
                 )
             })}
+            {open && (
+                <EditModal
+                    open={open}
+                    handleClose={handleClose}
+                    modalData={modalData}
+                    handleEditLine={handleEditLine}
+                    editInput={editInput}
+                    handleChangeLine={handleChangeLine}
+                    handleSave={handleSave}
+                />)
+            }
+            {openView && (
+                <ViewModal
+                    open={openView}
+                    handleClose={handleCloseView}
+                    modalData={modalData}
+                />
+            )}
+            {openAdd && (
+                <AddCategoryModal
+                    open={openAdd}
+                    handleClose={handleCloseAddCategory}
+                />
+            )}
         </Grid>
     );
 };
@@ -50,4 +130,4 @@ Categories.propTypes = {
     
 };
 
-export default Categories;
+export default memo(Categories);

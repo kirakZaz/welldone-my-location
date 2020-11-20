@@ -1,28 +1,24 @@
-import React from "react";
-import { Switch, Route } from "react-router-dom";
-import HomeSection from '../components/HomeSection'
+import React, {memo, useEffect, useState} from "react";
+import {Switch, Route, useHistory} from "react-router-dom";
+import Locations from '../components/Locations'
 import Categories from '../components/Categories'
+import Home from '../components/Home'
 
-const Router = (props) => {
-    const { routes } = props;
-    console.log('routes' , routes)
+const Router = () => {
+    const history = useHistory();
+    const [isHomePage, setIsHomePage] = useState(false)
+    useEffect(() =>{
+        setIsHomePage(history.location.pathname !== '/')
+    },[history])
+
+    console.log('history.location.pathname', isHomePage)
     return (
-
         <Switch>
-            {/*{routes.map((route) => {*/}
-                {/*return (*/}
-                    {/*<Route*/}
-                        {/*key={route.key}*/}
-                        {/*path={route.path}*/}
-                        {/*component={route.component}*/}
-                    {/*/>*/}
-                {/*)*/}
-            {/*})}*/}
-            <Route exact path="/" component={HomeSection} />
+            <Route exact path="/" component={Home} />
             <Route exact path="/categories" component={Categories} />
+            <Route exact path="/locations" component={Locations} />
         </Switch>
-
     );
 };
 
-export default Router;
+export default memo(Router);

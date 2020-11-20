@@ -72,10 +72,10 @@ const locations = [
 ];
 
 const categories = [
-    {name: 'Malls'},
-    {name: 'Food'},
-    {name: 'Work Area'},
-    {name: 'Parks'}
+    {name: 'Malls', id: 'malls'},
+    {name: 'Food', id: 'food'},
+    {name: 'Work Area', id: 'work_area'},
+    {name: 'Parks', id: 'parks'}
 ];
 
 export default {locations, categories}

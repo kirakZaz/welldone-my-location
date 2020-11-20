@@ -19,17 +19,17 @@ const TopNavigation = () => {
     },[history]);
 
     const goToHomePae = useCallback( () => {
-        history.push('/')
+        history.push('/locations')
     },[history]);
 
     return (
         <AppBar position="static">
             <Grid container justify="space-between" alignItems="center">
-                <Grid item xs={4}>title</Grid>
                 <Grid item xs={4}>
-                    <Button onClick={goToHomePae}>Home</Button>
                     <Button onClick={goToCat}>Categories</Button>
+                    <Button onClick={goToHomePae}>Locations</Button>
                 </Grid>
+                {/*<Grid item xs={4}>title</Grid>*/}
             </Grid>
         </AppBar>
     );

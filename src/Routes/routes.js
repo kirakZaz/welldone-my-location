@@ -1,11 +1,11 @@
 import React from 'react';
-import HomeSection from '../components/HomeSection'
+import Locations from '../components/Locations'
 import Categories from '../components/Categories'
 const routes = [
     {
         path: '/',
         component: (test) => {
-         return <HomeSection test={test} />
+         return <Locations test={test} />
         },
         key: '/home',
         exact: true
