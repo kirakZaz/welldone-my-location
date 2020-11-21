@@ -1,7 +1,6 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo } from 'react';
 
 import './App.css';
-import TopNavigation from './components/TopNavigation'
 import Router from "./Routes/Router";
 
 import Providers from './providers.js'
