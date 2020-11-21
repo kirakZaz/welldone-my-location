@@ -6,17 +6,22 @@ import Grid from '@material-ui/core/Grid'
 import TextField from "@material-ui/core/TextField/TextField";
 import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 import Button from "@material-ui/core/Button/Button";
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import Select from '@material-ui/core/Select';
-import ListItem from '@material-ui/core/ListItem'
+import ListItem from '@material-ui/core/ListItem';
+import Typography from "@material-ui/core/Typography/Typography";
+import InputLabel from '@material-ui/core/InputLabel';
+
 import CategoriesProvider from "../../../../api/categories/context";
 import LocationsContext from "../../../../api/locations/context";
 
+import useStyles from './addLocatiosStyles.js'
+
 const AddLocationModal = props => {
-    const {open, handleClose} = props;
+    const { open, handleClose } = props;
+    const classes = useStyles();
     const categories = useContext(CategoriesProvider);
     const locations = useContext(LocationsContext);
 
@@ -62,13 +67,13 @@ const AddLocationModal = props => {
                 }}
             >
                 {(formikProps) => {
+                    console.log('formikProps', formikProps)
                     const {values, errors, touched, handleChange, handleSubmit} = formikProps;
                     return (
                         <Form onSubmit={handleSubmit}>
                             <DialogContent>
-                                <DialogContentText>
-                                    <Grid container>
-                                        <Grid item xs={12}>
+                                <Grid container>
+                                        <Grid item xs={12} className={classes.inputWrapper}>
                                             <Field
                                                 component={TextField}
                                                 fullWidth
@@ -77,9 +82,16 @@ const AddLocationModal = props => {
                                                 onChange={handleChange('name')}
                                                 value={values.name}
                                             />
-                                            {errors.name && touched.name && errors.name}
+                                            {errors.name && touched.name && (
+                                                <Typography
+                                                    variant="body2"
+                                                    color="error"
+                                                >
+                                                    {errors.name}
+                                                </Typography>
+                                            )}
                                         </Grid>
-                                        <Grid item xs={12}>
+                                        <Grid item xs={12} className={classes.inputWrapper}>
                                             <Field
                                                 component={TextField}
                                                 fullWidth
@@ -88,9 +100,16 @@ const AddLocationModal = props => {
                                                 onChange={handleChange('address')}
                                                 value={values.address}
                                             />
-                                            {errors.address && touched.address && errors.address}
+                                            {errors.address && touched.address && (
+                                                <Typography
+                                                    variant="body2"
+                                                    color="error"
+                                                >
+                                                    {errors.address}
+                                                </Typography>
+                                            )}
                                         </Grid>
-                                        <Grid item xs={12}>
+                                        <Grid item xs={12} className={classes.inputWrapper}>
                                             <Field
                                                 component={TextField}
                                                 fullWidth
@@ -99,9 +118,17 @@ const AddLocationModal = props => {
                                                 onChange={handleChange('coordinates')}
                                                 value={values.coordinates}
                                             />
-                                            {errors.coordinates && touched.coordinates && errors.coordinates}
+                                            {errors.coordinates && touched.coordinates && (
+                                                <Typography
+                                                    variant="body2"
+                                                    color="error"
+                                                >
+                                                    {errors.coordinates}
+                                                </Typography>
+                                            )}
                                         </Grid>
-                                        <Grid item xs={12}>
+                                        <Grid item xs={12} className={`${classes.inputWrapper} ${classes.selectInput}`}>
+                                            <InputLabel>Category</InputLabel>
                                             <Field
                                                 component={Select}
                                                 fullWidth
@@ -109,6 +136,9 @@ const AddLocationModal = props => {
                                                 name="category"
                                                 onChange={handleChange('category')}
                                                 value={values.category}
+                                                inputProps={{
+                                                    label: "Category"
+                                                }}
                                             >
                                                 {categories.data.map((option) => {
                                                     return (
@@ -121,10 +151,17 @@ const AddLocationModal = props => {
                                                     )
                                                 })}
                                             </Field>
-                                            {errors.category && touched.category && errors.category}
+
+                                            {errors.category && touched.category && (
+                                                <Typography
+                                                    variant="body2"
+                                                    color="error"
+                                                >
+                                                    {errors.category}
+                                                </Typography>
+                                            )}
                                         </Grid>
-                                    </Grid>
-                                </DialogContentText>
+                                </Grid>
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={handleClose} color="primary">

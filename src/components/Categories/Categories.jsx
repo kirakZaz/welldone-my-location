@@ -5,8 +5,10 @@ import Button from "@material-ui/core/Button/Button";
 import ListOption from "../uiComponents/ListOption";
 import EditModal from "../uiComponents/Modals/EditModal";
 import ViewModal from "../uiComponents/Modals/ViewModal";
+import Typography from "@material-ui/core/Typography/Typography";
 
 import AddCategoryModal from '../uiComponents/Modals/AddCategoryModal'
+import TopNavigation from "../TopNavigation";
 
 import CategoriesContext from "../../api/categories/context";
 import useStyles from './categoriesStyles.js'
@@ -74,8 +76,11 @@ const Categories = () => {
     }, [categories, modalData]);
 
     return (
-        <Grid container>
-            <Grid container justify="flex-end">
+        <>
+            <TopNavigation />
+            <Grid container>
+            <Grid container justify="space-between" alignItems="center">
+                <Typography variant="h5">Categories List</Typography>
                 <Button
                     className={classes.addButton}
                     color="primary"
@@ -123,6 +128,7 @@ const Categories = () => {
                 />
             )}
         </Grid>
+        </>
     );
 };
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import Typography from "@material-ui/core/Typography/Typography";
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import EditIcon from '@material-ui/icons/Edit';
@@ -7,7 +8,7 @@ import TextField from "@material-ui/core/TextField/TextField";
 import Grid from "@material-ui/core/Grid/Grid";
 
 const EditableLineItem = (props) => {
-    const { value, handleEdit, editInput, name, handleChange} = props;
+    const { value, handleEdit, editInput, name, handleChange } = props;
 
     return (
         <Grid style={{width: '400px'}}container justify="space-between" alignItems="center">
@@ -28,16 +29,16 @@ const EditableLineItem = (props) => {
             <Grid item xs={2}>
                 <IconButton onClick={handleEdit}><EditIcon /></IconButton>
             </Grid>
-
-
         </Grid>
     );
 };
 
 EditableLineItem.propTypes = {
-
-    itemId: PropTypes.string,
-    itemName: PropTypes.string
+    handleEdit: PropTypes.func,
+    handleChange: PropTypes.func,
+    value: PropTypes.string,
+    editInput: PropTypes.string,
+    name: PropTypes.string,
 
 };
 

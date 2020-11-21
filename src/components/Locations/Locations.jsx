@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useCallback, useState, memo } from 'react';
 import PropTypes from 'prop-types';
-import LocationsContext from '../../api/locations/context'
+import LocationsContext from '../../api/locations/context';
 
-import Grid from '@material-ui/core/Grid'
-import List from '@material-ui/core/List'
-import Button from '@material-ui/core/Button'
+import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import Button from '@material-ui/core/Button';
+import Typography from "@material-ui/core/Typography/Typography";
 
-import ListOption from '../uiComponents/ListOption'
-import EditModal from '../uiComponents/Modals/EditModal'
-import ViewModal from '../uiComponents/Modals/ViewModal'
-import AddLocationModal from '../uiComponents/Modals/AddLocationModal'
+import ListOption from '../uiComponents/ListOption';
+import EditModal from '../uiComponents/Modals/EditModal';
+import ViewModal from '../uiComponents/Modals/ViewModal';
+import AddLocationModal from '../uiComponents/Modals/AddLocationModal';
+
 import useStyles from './locationsStyles.js'
+import TopNavigation from "../TopNavigation";
 
 const Locations = () => {
     const classes = useStyles();
@@ -76,56 +79,64 @@ const Locations = () => {
     }, [modalData]);
 
     return (
-        <Grid>
-            <Grid container justify="flex-end">
-                <Button
-                    className={classes.addButton}
-                    color="primary"
-                    variant="contained"
-                    onClick={handleOpenAddLocation}
-                >
-                    Add Location
-                </Button>
-            </Grid>
+        <>
+            <TopNavigation />
+            <Grid>
+                <Grid container justify="space-between" alignItems="center">
+                    <Grid>
+                        <Typography variant="h5">Locations List</Typography>
+                    </Grid>
+                    <Grid>
+                        <Button
+                            className={classes.addButton}
+                            color="primary"
+                            variant="contained"
+                            onClick={handleOpenAddLocation}
+                        >
+                            Add Location
+                        </Button>
+                    </Grid>
+                </Grid>
 
-            <List>
-                {locations?.data?.map((item) => {
-                    return (
-                        <ListOption
-                            key={item.id}
-                            handleEdit={handleEdit(item)}
-                            handleDelete={handleDelete(item.id)}
-                            handleView={handleView(item)}
-                            item={item}
-                        />
-                    )
-                })}
-            </List>
-            {open && (
-                <EditModal
-                    open={open}
-                    handleClose={handleClose}
-                    modalData={modalData}
-                    handleEditLine={handleEditLine}
-                    editInput={editInput}
-                    handleChangeLine={handleChangeLine}
-                    handleSave={handleSave}
-                />)
-            }
-            {openView && (
-                <ViewModal
-                    open={openView}
-                    handleClose={handleCloseView}
-                    modalData={modalData}
-                />
-            )}
-            {openAdd && (
-                <AddLocationModal
-                    open={openAdd}
-                    handleClose={handleCloseAddLocation}
-                />
-            )}
-        </Grid>
+                <List>
+                    {locations?.data?.map((item) => {
+                        return (
+                            <ListOption
+                                key={item.id}
+                                handleEdit={handleEdit(item)}
+                                handleDelete={handleDelete(item.id)}
+                                handleView={handleView(item)}
+                                item={item}
+                            />
+                        )
+                    })}
+                </List>
+                {open && (
+                    <EditModal
+                        open={open}
+                        handleClose={handleClose}
+                        modalData={modalData}
+                        handleEditLine={handleEditLine}
+                        editInput={editInput}
+                        handleChangeLine={handleChangeLine}
+                        handleSave={handleSave}
+                    />)
+                }
+                {openView && (
+                    <ViewModal
+                        open={openView}
+                        handleClose={handleCloseView}
+                        modalData={modalData}
+                    />
+                )}
+                {openAdd && (
+                    <AddLocationModal
+                        open={openAdd}
+                        handleClose={handleCloseAddLocation}
+                    />
+                )}
+            </Grid>
+        </>
     );
 };
 

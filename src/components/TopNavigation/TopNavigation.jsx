@@ -1,17 +1,14 @@
-import React, {useCallback, useContext,useEffect} from 'react';
+import React, { useCallback } from 'react';
 import { useHistory } from "react-router-dom";
 
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
-
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import PropTypes from 'prop-types';
-import LocationsContext from "../../api/locations/context";
 
+import useStyles from './topNavigationStyles.js'
 
 const TopNavigation = () => {
-
+    const classes = useStyles();
     const history = useHistory();
 
     const goToCat = useCallback( () => {
@@ -23,13 +20,12 @@ const TopNavigation = () => {
     },[history]);
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" className={classes.root}>
             <Grid container justify="space-between" alignItems="center">
                 <Grid item xs={4}>
-                    <Button onClick={goToCat}>Categories</Button>
-                    <Button onClick={goToHomePae}>Locations</Button>
+                    <Button className={classes.button} onClick={goToCat}>Categories</Button>
+                    <Button className={classes.button} onClick={goToHomePae}>Locations</Button>
                 </Grid>
-                {/*<Grid item xs={4}>title</Grid>*/}
             </Grid>
         </AppBar>
     );

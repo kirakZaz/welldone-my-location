@@ -4,7 +4,7 @@ import mock from '../mock.js'
 
 export const CategoriesProvider = (props) => {
     const [data, setData] = useState([]);
-    console.log('data', data)
+
     const get = useCallback(() => {
         return Promise.resolve().then(() => {
             setData(mock.categories);

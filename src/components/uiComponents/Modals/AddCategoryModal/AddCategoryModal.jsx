@@ -6,14 +6,13 @@ import Grid from '@material-ui/core/Grid'
 import TextField from "@material-ui/core/TextField/TextField";
 import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 import Button from "@material-ui/core/Button/Button";
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import CategoriesProvider from "../../../../api/categories/context";
 
 const AddCategoryModal = props => {
-    const {open, handleClose, handleSave} = props;
+    const { open, handleClose } = props;
     const categories = useContext(CategoriesProvider);
 
     useEffect(() => {
@@ -22,7 +21,7 @@ const AddCategoryModal = props => {
 
     return (
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Add Location</DialogTitle>
+            <DialogTitle>Add Location</DialogTitle>
             <Formik
                 initialValues={{
                     name: '',
@@ -48,27 +47,25 @@ const AddCategoryModal = props => {
                     return (
                         <Form onSubmit={handleSubmit}>
                             <DialogContent>
-                                <DialogContentText>
-                                    <Grid container>
-                                        <Grid item xs={12}>
-                                            <Field
-                                                component={TextField}
-                                                fullWidth
-                                                name="name"
-                                                label='Name'
-                                                onChange={handleChange('name')}
-                                                value={values.name}
-                                            />
-                                            {errors.name && touched.name && errors.name}
-                                        </Grid>
+                                <Grid container>
+                                    <Grid item xs={12}>
+                                        <Field
+                                            component={TextField}
+                                            fullWidth
+                                            name="name"
+                                            label='Name'
+                                            onChange={handleChange('name')}
+                                            value={values.name}
+                                        />
+                                        {errors.name && touched.name && errors.name}
                                     </Grid>
-                                </DialogContentText>
+                                </Grid>
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={handleClose} color="primary">
                                     Cancel
                                 </Button>
-                                <Button type="submit" onClick={handleSave} color="primary">
+                                <Button type="submit" color="primary">
                                     Save
                                 </Button>
                             </DialogActions>
@@ -82,8 +79,7 @@ const AddCategoryModal = props => {
 
 AddCategoryModal.propTypes = {
     open: PropTypes.bool.isRequired,
-    handleClose: PropTypes.func.isRequired,
-    handleSave: PropTypes.func.isRequired
+    handleClose: PropTypes.func.isRequired
 };
 
 export default memo(AddCategoryModal);
