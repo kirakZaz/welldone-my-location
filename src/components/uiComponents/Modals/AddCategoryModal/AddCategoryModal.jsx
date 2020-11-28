@@ -15,19 +15,12 @@ const AddCategoryModal = props => {
     const { open, handleClose } = props;
     const categories = useContext(CategoriesProvider);
 
-    useEffect(() => {
-        categories.get()
-    }, []);
-
     return (
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
             <DialogTitle>Add Location</DialogTitle>
             <Formik
                 initialValues={{
-                    name: '',
-                    address: '',
-                    coordinates: '',
-                    category: ''
+                    name: ''
                 }}
                 validate={values => {
                     const errors = {};
@@ -38,7 +31,19 @@ const AddCategoryModal = props => {
                     return errors;
                 }}
                 onSubmit={(values ) => {
-                    categories.post(values)
+                    let id = '';
+                    if(values.name.includes(' ')) {
+                        id = values.name.join('_').toLowerCase();
+                    } else {
+                        id = values.name.toLowerCase();
+                    }
+
+                    const data = {
+                        name: values.name,
+                        id
+                    };
+
+                    categories.post(data);
                     handleClose()
                 }}
             >

@@ -1,4 +1,4 @@
-import React, {memo, useContext, useEffect} from 'react';
+import React, {memo, useContext, useEffect, useCallback, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
 
@@ -16,6 +16,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 
 import CategoriesProvider from "../../../../api/categories/context";
 import LocationsContext from "../../../../api/locations/context";
+import MapSection from '../../../../components/Map'
 
 import useStyles from './addLocatiosStyles.js'
 
@@ -25,8 +26,16 @@ const AddLocationModal = props => {
     const categories = useContext(CategoriesProvider);
     const locations = useContext(LocationsContext);
 
-    useEffect(() => {
-        categories.get()
+    const [marker, setMarker] = useState(false);
+
+    const handleSelectLocation = useCallback((setFieldValue) => (t, map, coord)  => {
+        const { latLng } = coord;
+        const lat = latLng.lat();
+        const lng = latLng.lng();
+
+        setFieldValue('coordinates', {lat: lat, lng: lng});
+        setMarker(true)
+
     }, []);
 
     return (
@@ -36,8 +45,8 @@ const AddLocationModal = props => {
                 initialValues={{
                     name: '',
                     address: '',
-                    coordinates: '',
-                    category: ''
+                    coordinates: { lat: 32.081222, lng: 34.778017 },
+                    category: []
                 }}
                 validate={values => {
                     const errors = {};
@@ -50,11 +59,11 @@ const AddLocationModal = props => {
                     if (!values.coordinates) {
                         errors.coordinates = 'Coordinates is Required';
                     }
-                    if (
-                        !/^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$/i.test(values.coordinates)
-                    ) {
+                    const reg = /^-?[0-9]{1,3}[.][0-9]+/i;
+                    if (!reg.test(values.coordinates.lat) && !reg.test(values.coordinates.lng)) {
                         errors.coordinates = 'Coordinates is Invalid';
                     }
+
                     if (!values.category) {
                         errors.category = 'Category is Required';
                     }
@@ -62,13 +71,13 @@ const AddLocationModal = props => {
                     return errors;
                 }}
                 onSubmit={(values ) => {
-                    locations.post(values)
+                    locations.post(values);
                     handleClose()
                 }}
             >
                 {(formikProps) => {
-                    console.log('formikProps', formikProps)
-                    const {values, errors, touched, handleChange, handleSubmit} = formikProps;
+                    // console.log('formikProps', formikProps)
+                    const {values, errors, touched, handleChange, handleSubmit, setFieldValue} = formikProps;
                     return (
                         <Form onSubmit={handleSubmit}>
                             <DialogContent>
@@ -116,8 +125,14 @@ const AddLocationModal = props => {
                                                 label="Coordinates"
                                                 name="coordinates"
                                                 onChange={handleChange('coordinates')}
-                                                value={values.coordinates}
+                                                value={`${values.coordinates.lat} - ${values.coordinates.lng}`}
                                             />
+                                            <Grid style={{height: '200px', width: '100%', position: 'relative'}}>
+                                                <MapSection
+                                                    location={values.coordinates}
+                                                    marker={marker}
+                                                    onClick={handleSelectLocation(setFieldValue)}/>
+                                            </Grid>
                                             {errors.coordinates && touched.coordinates && (
                                                 <Typography
                                                     variant="body2"
@@ -136,8 +151,10 @@ const AddLocationModal = props => {
                                                 name="category"
                                                 onChange={handleChange('category')}
                                                 value={values.category}
+                                                multiple
                                                 inputProps={{
-                                                    label: "Category"
+                                                    label: "Category",
+                                                    multiple: true
                                                 }}
                                             >
                                                 {categories.data.map((option) => {

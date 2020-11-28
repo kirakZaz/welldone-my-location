@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState, memo } from 'react';
+import MaterialTable from 'material-table';
 
 import Grid from '@material-ui/core/Grid'
 import Button from "@material-ui/core/Button/Button";
@@ -9,6 +10,7 @@ import Typography from "@material-ui/core/Typography/Typography";
 
 import AddCategoryModal from '../uiComponents/Modals/AddCategoryModal'
 import TopNavigation from "../TopNavigation";
+
 
 import CategoriesContext from "../../api/categories/context";
 import useStyles from './categoriesStyles.js'

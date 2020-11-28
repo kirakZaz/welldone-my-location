@@ -30,13 +30,22 @@ const ViewModal = (props) => {
             <DialogContent>
                 {Object.keys(modalData).map((keyItem) => {
                     return (
-                            modalData[keyItem] && (
+                        keyItem !== 'tableData' && modalData[keyItem] && (
                                 <Grid container justify="flex-start" key={keyItem}>
                                     <ListItem>
                                         <Grid>
                                             {capitalizeFirstLetter(keyItem)}:&nbsp;
                                         </Grid>
-                                        <Grid>{modalData[keyItem]}</Grid>
+                                        {keyItem === 'coordinates' ? (
+                                            <Grid>
+                                                {`${modalData.coordinates.lat}
+                                                - ${modalData.coordinates.lng}`}
+                                            </Grid>
+                                        ) : keyItem === 'category' && typeof keyItem !== 'string'
+                                            ? <Grid>{modalData[keyItem].join(', ')}</Grid>
+                                            : <Grid>{modalData[keyItem]}</Grid>
+                                        }
+
                                     </ListItem>
                                 </Grid>
                         )

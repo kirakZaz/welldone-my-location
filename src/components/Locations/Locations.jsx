@@ -1,23 +1,35 @@
-import React, { useContext, useEffect, useCallback, useState, memo } from 'react';
+import React, {memo, useCallback, useContext, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import MaterialTable from "material-table";
+import tableIcons from '../tableIcons.js'
+
+import CategoriesProvider from "../../api/categories/context";
 import LocationsContext from '../../api/locations/context';
 
 import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
 import Button from '@material-ui/core/Button';
+import IconButton from "@material-ui/core/IconButton/IconButton";
 import Typography from "@material-ui/core/Typography/Typography";
 
-import ListOption from '../uiComponents/ListOption';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+
 import EditModal from '../uiComponents/Modals/EditModal';
 import ViewModal from '../uiComponents/Modals/ViewModal';
 import AddLocationModal from '../uiComponents/Modals/AddLocationModal';
 
 import useStyles from './locationsStyles.js'
 import TopNavigation from "../TopNavigation";
+import MapSection from '../Map'
 
 const Locations = () => {
     const classes = useStyles();
     const locations = useContext(LocationsContext);
+
+    useEffect(() =>{
+        locations.get();
+    },[]);
 
     const [open, setOpen] = useState(false);
     const [openView, setOpenView] = useState(false);
@@ -25,10 +37,6 @@ const Locations = () => {
     const [modalData, setModalData] = useState({});
     const [editInput, openEditInput] = useState('');
     const [data, setData] = useState({});
-
-    useEffect(() =>{
-        locations.get()
-    },[]);
 
     const handleOpenAddLocation = useCallback(() => {
         setOpenAdd(true)
@@ -97,20 +105,65 @@ const Locations = () => {
                         </Button>
                     </Grid>
                 </Grid>
+                <MaterialTable
+                    title=""
+                    data={locations?.data}
+                    icons={tableIcons}
+                    options={{
+                        grouping: true,
+                        sorting: true
+                    }}
+                    columns={[
+                        { title: 'Name', field: 'name' },
+                        { title: 'Address', field: 'address' },
+                        { title: 'Category', field: 'category',
+                            render: (row) => {
+                                let value;
+                                if(row.category){
+                                    if(typeof row.category === 'string') {
+                                        value = row.category
+                                    } else {
+                                        value = row.category.join(', ')
+                                    }
+                                } else if (!row.category && row) {
+                                    if(typeof row !== 'string') {
+                                        value = row.join(', ')
+                                    } else {
+                                        value = row
+                                    }
+                                }
 
-                <List>
-                    {locations?.data?.map((item) => {
-                        return (
-                            <ListOption
-                                key={item.id}
-                                handleEdit={handleEdit(item)}
-                                handleDelete={handleDelete(item.id)}
-                                handleView={handleView(item)}
-                                item={item}
-                            />
-                        )
-                    })}
-                </List>
+                                return (
+                                    <Grid style={{ display: 'inline-block' }}>{value}</Grid>
+                                )
+                        }},
+                        { title: '', render: (row) => (
+                            <Grid container justify="flex-end">
+                                <IconButton onClick={handleEdit(row)}><EditIcon /></IconButton>
+                                <IconButton onClick={handleDelete(row)}><DeleteIcon /></IconButton>
+                                <IconButton onClick={handleView(row)}><VisibilityIcon /></IconButton>
+                            </Grid>
+                            )}
+
+                    ]}
+                    detailPanel={[
+                        {
+                            tooltip: 'Show Map',
+                            render: rowData => {
+                                return (
+                                    <Grid style={{height: '300px', position: 'relative'}}>
+                                        <MapSection
+                                            location={rowData.coordinates}
+                                            props={rowData}
+                                            zoomLevel={17}
+                                            marker
+                                        />
+                                    </Grid>
+                                )
+                            }
+                        }
+                    ]}
+                />
                 {open && (
                     <EditModal
                         open={open}
